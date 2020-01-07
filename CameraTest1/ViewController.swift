@@ -15,7 +15,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // カメラが使えるかどうか確認するコード　カメラがあれば、特には何もしない
+        // ↓↓↓↓↓ カメラが使えるかどうか確認するコード　カメラがあれば、特には何もしない ↓↓↓↓↓
         if !UIImagePickerController.isSourceTypeAvailable(.camera) {
             let alertController = UIAlertController.init(title: nil, message: "No Camera availale", preferredStyle: .alert)
             
@@ -24,6 +24,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             
             self.present(alertController, animated: true, completion: nil)
         }
+        // ↑↑↑↑↑ カメラが使えるかどうか確認するコード　カメラがあれば、特には何もしない ↑↑↑↑↑
     }
     
     
@@ -42,11 +43,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        
         if let captureImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             picker.dismiss(animated:true, completion: nil)
             imageView.contentMode = .scaleToFill
+            
+            // captureImageは静止画になる
+            
+            let grayCaptureImage = OpenCV.grayScale(captureImage)
+            
             // キャプチャした画像をイメージビューに貼り付ける
-            imageView.image = captureImage
+            imageView.image = grayCaptureImage
         }
     }
     
