@@ -8,13 +8,52 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    @IBOutlet weak var imageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        // カメラが使えるかどうか確認するコード　カメラがあれば、特には何もしない
+        if !UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let alertController = UIAlertController.init(title: nil, message: "No Camera availale", preferredStyle: .alert)
+            
+            let okAction = UIAlertAction.init(title: "OK", style: .default, handler: {(alert: UIAlertAction!) in})
+            alertController.addAction(okAction)
+            
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
-
+    
+    
+    @IBAction func takePicture(_ sender: UIButton) {
+        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
+            let picker = UIImagePickerController()
+            picker.delegate = self
+            picker.sourceType = UIImagePickerController.SourceType.camera
+            
+            self.present(picker, animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func savePicture(_ sender: UIButton) {
+        // 写真の保存は今は実装しない
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let captureImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            picker.dismiss(animated:true, completion: nil)
+            imageView.contentMode = .scaleToFill
+            // キャプチャした画像をイメージビューに貼り付ける
+            imageView.image = captureImage
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
 
 }
 
